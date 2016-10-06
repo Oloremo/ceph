@@ -4159,6 +4159,11 @@ void PG::chunky_scrub(ThreadPool::TPHandle &handle)
           return;
         }
 
+        // Account for http://tracker.ceph.com/issues/17491
+        if (!scrubber.primary_scrubmap.objects.empty() &&
+            scrubber.primary_scrubmap.objects.rbegin()->first == scrubber.end)
+          scrubber.primary_scrubmap.objects.erase(scrubber.end);
+
         --scrubber.waiting_on;
         scrubber.waiting_on_whom.erase(pg_whoami);
 
